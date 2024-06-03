@@ -1,8 +1,8 @@
 #!/bin/bash
-set -e
-# Actualiza la lista de paquetes e instala las dependencias necesarias
+
 
 sudo apt-get update && sudo apt-get upgrade -y
+
 
 sudo apt-get install -y build-essential curl git wget unzip vim tmux net-tools
 
@@ -50,9 +50,14 @@ sudo systemctl restart nginx
 
 cd /home/unir
 
-npm install
- 
-sudo pm2 start index.js
+sudo npm install
+
+ENV_CONTENT=$(cat <<EOL
+MONGODB_IP=\${MONGODB_IP}
+EOL)
+sudo echo "$ENV_CONTENT" > /home/unir/.env
+
+sudo pm2 start index.js --env production
 
 sudo pm2 startup
 
